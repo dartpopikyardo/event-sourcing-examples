@@ -1,0 +1,11 @@
+zuul:
+  routes:
+    accounts:
+        path: /accounts/**
+        url: http://${accounts.commandside.service.host}:8080/accounts
+    customers:
+        path: /customers/**
+        url: http://${accounts.commandside.service.host}:8080/customers
+    transfers:
+        path: /transfers/**
+        url: http://${transactions.commandside.service.host}:8080/transfers
