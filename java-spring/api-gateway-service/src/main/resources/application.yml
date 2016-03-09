@@ -1,11 +1,41 @@
+spring:
+  application:
+     name: api-gateway-service
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
 zuul:
   routes:
     accounts:
         path: /accounts/**
-        url: http://${accounts.commandside.service.host}:8080/accounts
     customers:
         path: /customers/**
-        url: http://${accounts.commandside.service.host}:8080/customers
     transfers:
         path: /transfers/**
-        url: http://${transactions.commandside.service.host}:8080/transfers
+
+api:
+  gateway:
+    endpoints:
+      0:
+        path: /accounts/**
+        method: GET
+        service: accounts-query-side-service
+      1:
+        path: /accounts/**
+        method: POST
+        service: accounts-command-side-service
+      2:
+        path: /customers/**
+        method: GET
+        service: customers-query-side-service
+      3:
+        path: /customers/**
+        method: POST
+        service: customers-command-side-service
+      4:
+        path: /transfers/**
+        method: POST
+        service: transactions-command-side-service
