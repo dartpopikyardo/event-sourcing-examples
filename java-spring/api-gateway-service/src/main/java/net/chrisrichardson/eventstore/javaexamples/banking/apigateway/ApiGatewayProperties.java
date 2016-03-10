@@ -16,13 +16,15 @@ public class ApiGatewayProperties {
     public static class Endpoint {
         private String path;
         private RequestMethod method;
-        private String service;
+        private String host;
+        private int port;
 
         public Endpoint() {
         }
 
-        public Endpoint(String service) {
-            this.service = service;
+        public Endpoint(String host, int port) {
+            this.host = host;
+            this.port = port;
         }
 
         public String getPath() {
@@ -41,12 +43,20 @@ public class ApiGatewayProperties {
             this.method = method;
         }
 
-        public String getService() {
-            return service;
+        public String getHost() {
+            return host;
         }
 
-        public void setService(String service) {
-            this.service = service;
+        public void setHost(String host) {
+            this.host = host;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public void setPort(int port) {
+            this.port = port;
         }
     }
 

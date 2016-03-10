@@ -2,11 +2,6 @@ spring:
   application:
      name: api-gateway-service
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-
 zuul:
   routes:
     accounts:
@@ -22,20 +17,25 @@ api:
       0:
         path: /accounts/**
         method: GET
-        service: accounts-query-side-service
+        host: ${accounts.queryside.service.host:localhost}
+        port: 8080
       1:
         path: /accounts/**
         method: POST
-        service: accounts-command-side-service
+        host: ${accounts.commandside.service.host:localhost}
+        port: 8080
       2:
         path: /customers/**
         method: GET
-        service: customers-query-side-service
+        host: ${customers.queryside.service.host:localhost}
+        port: 8080
       3:
         path: /customers/**
         method: POST
-        service: customers-command-side-service
+        host: ${customers.commandside.service.host:localhost}
+        port: 8080
       4:
         path: /transfers/**
         method: POST
-        service: transactions-command-side-service
+        host: ${transactions.commandside.service.host:localhost}
+        port: 8080

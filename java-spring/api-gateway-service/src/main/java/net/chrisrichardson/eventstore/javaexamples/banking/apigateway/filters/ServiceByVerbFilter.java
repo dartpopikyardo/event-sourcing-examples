@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 import org.springframework.web.util.UrlPathHelper;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 /**
  * Created by popikyardo on 06.03.16.
  */
@@ -48,9 +51,13 @@ public class ServiceByVerbFilter extends ZuulFilter {
                             pathMatcher.match(e.getPath(), requestURI) && e.getMethod() == RequestMethod.valueOf(ctx.getRequest().getMethod())
                     )
                     .findFirst().orElseThrow(() -> new RuntimeException( new NoSuchRequestHandlingMethodException(ctx.getRequest())));
-        ctx.setRouteHost(null);
-        ctx.set("serviceId", endpoint.getService());
-        ctx.setSendZuulResponse(true);
+
+        try {
+            ctx.setRouteHost(new URL(endpoint.getHost()+endpoint.getPort()+"/"+requestURI));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+
         return null;
     }
 
