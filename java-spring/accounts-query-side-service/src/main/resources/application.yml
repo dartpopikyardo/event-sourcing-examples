@@ -1,3 +1,6 @@
 spring:
   application:
     name: accounts-query-side-service
+
+server:
+  port: 8081

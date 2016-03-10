@@ -53,7 +53,9 @@ public class ServiceByVerbFilter extends ZuulFilter {
                     .findFirst().orElseThrow(() -> new RuntimeException( new NoSuchRequestHandlingMethodException(ctx.getRequest())));
 
         try {
-            ctx.setRouteHost(new URL(endpoint.getHost()+endpoint.getPort()+"/"+requestURI));
+            ctx.setRouteHost(new URL("http://"+endpoint.getHost()+":"+endpoint.getPort()));
+            ctx.set("requestURI", requestURI);
+            ctx.setSendZuulResponse(true);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
