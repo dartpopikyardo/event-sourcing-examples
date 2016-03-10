@@ -18,24 +18,24 @@ api:
         path: /accounts/**
         method: GET
         host: ${accounts.queryside.service.host:localhost}
-        port: 8081
+        port: 8080
       1:
         path: /accounts/**
         method: POST
         host: ${accounts.commandside.service.host:localhost}
-        port: 8081
+        port: 8080
       2:
         path: /customers/**
         method: GET
         host: ${customers.queryside.service.host:localhost}
-        port: 8081
+        port: 8080
       3:
         path: /customers/**
         method: POST
         host: ${customers.commandside.service.host:localhost}
-        port: 8081
+        port: 8080
       4:
         path: /transfers/**
         method: POST
         host: ${transactions.commandside.service.host:localhost}
-        port: 8081
+        port: 8080
