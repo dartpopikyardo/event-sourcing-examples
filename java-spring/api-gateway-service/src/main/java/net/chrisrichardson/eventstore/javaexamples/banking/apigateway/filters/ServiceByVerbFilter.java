@@ -48,6 +48,7 @@ public class ServiceByVerbFilter extends ZuulFilter {
                             pathMatcher.match(e.getPath(), requestURI) && e.getMethod() == RequestMethod.valueOf(ctx.getRequest().getMethod())
                     )
                     .findFirst().orElseThrow(() -> new RuntimeException( new NoSuchRequestHandlingMethodException(ctx.getRequest())));
+        ctx.set("requestURI", requestURI);
         ctx.setRouteHost(null);
         ctx.set("serviceId", endpoint.getService());
         ctx.setSendZuulResponse(true);

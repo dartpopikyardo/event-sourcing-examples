@@ -4,8 +4,9 @@ spring:
 
 eureka:
   client:
+    registryFetchIntervalSeconds: 5
     serviceUrl:
-      defaultZone: http://${service-registry.uri:localhost:8761}/eureka/
+      defaultZone: http://localhost:8761/eureka/
 
 zuul:
   routes:
@@ -39,3 +40,12 @@ api:
         path: /transfers/**
         method: POST
         service: transactions-command-side-service
+
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
