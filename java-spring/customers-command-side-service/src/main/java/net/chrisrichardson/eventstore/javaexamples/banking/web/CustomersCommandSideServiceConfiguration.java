@@ -5,7 +5,6 @@ import net.chrisrichardson.eventstore.javaexamples.banking.commonswagger.CommonS
 import net.chrisrichardson.eventstore.javaexamples.banking.web.commandside.customers.CustomersCommandSideWebConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,10 +13,9 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 @Configuration
-@Import({CustomersCommandSideWebConfiguration.class, EventStoreHttpClientConfiguration.class, CommonSwaggerConfiguration.class})
+@Import({CustomersCommandSideWebConfiguration.class, EventStoreHttpClientConfiguration.class, CommonSwaggerConfiguration.class, EurekaClientConfiguration.class})
 @EnableAutoConfiguration
 @ComponentScan
-@EnableEurekaClient
 public class CustomersCommandSideServiceConfiguration {
 
 

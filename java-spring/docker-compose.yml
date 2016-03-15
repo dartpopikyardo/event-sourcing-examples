@@ -13,10 +13,11 @@ mongodb:
 
 apigateway:
   image: java:8
+  mem_limit: 512m
   working_dir: /app
   volumes:
     - ./api-gateway-service/build/libs:/app
-  command: java -jar /app/api-gateway-service.jar --eureka.instance.prefer-ip-address=true --eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/ --accounts.commandside.service.host=accountscommandside --transactions.commandside.service.host=transactionscommandside --accounts.queryside.service.host=accountsqueryside --customers.commandside.service.host=customerscommandside  --customers.queryside.service.host=customersqueryside
+  command: java -jar /app/api-gateway-service.jar --spring.profiles.active=enableEureka --eureka.instance.prefer-ip-address=true --eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/ --accounts.commandside.service.host=accountscommandside --transactions.commandside.service.host=transactionscommandside --accounts.queryside.service.host=accountsqueryside --customers.commandside.service.host=customerscommandside  --customers.queryside.service.host=customersqueryside
   ports:
     - "8080:8080"
   links:
@@ -27,14 +28,15 @@ apigateway:
 
 accountscommandside:
   image: java:8
+  mem_limit: 512m
   working_dir: /app
   volumes:
     - ./accounts-command-side-service/build/libs:/app
-  command: java -jar /app/accounts-command-side-service.jar --server.port=8085 --eureka.instance.prefer-ip-address=true --eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/
+  command: java -jar /app/accounts-command-side-service.jar --spring.profiles.active=enableEureka --server.port=8085 --eureka.instance.prefer-ip-address=true --eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/
   ports:
     - "8085:8085"
   links:
-    - serviceregistry
+    - eureka
   environment:
     EVENTUATE_API_KEY_ID:
     EVENTUATE_API_KEY_SECRET:
@@ -46,12 +48,11 @@ accountsqueryside:
   working_dir: /app
   volumes:
     - ./accounts-query-side-service/build/libs:/app
-  command: java -jar /app/accounts-query-side-service.jar --server.port=8081 --eureka.instance.prefer-ip-address=true --eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/
+  command: java -jar /app/accounts-query-side-service.jar --spring.profiles.active=enableEureka --server.port=8081 --eureka.instance.prefer-ip-address=true --eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/
   ports:
     - "8081:8081"
   links:
-    - serviceregistry
-  links:
+    - eureka
     - mongodb
   environment:
     EVENTUATE_API_KEY_ID:
@@ -61,10 +62,11 @@ accountsqueryside:
 
 customerscommandside:
   image: java:8
+  mem_limit: 512m
   working_dir: /app
   volumes:
     - ./customers-command-side-service/build/libs:/app
-  command: java -jar /app/customers-command-side-service.jar --server.port=8083 --eureka.instance.prefer-ip-address=true --eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/
+  command: java -jar /app/customers-command-side-service.jar --spring.profiles.active=enableEureka --server.port=8083 --eureka.instance.prefer-ip-address=true --eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/
   ports:
     - "8083:8083"
   links:
@@ -80,12 +82,11 @@ customersqueryside:
   working_dir: /app
   volumes:
     - ./customers-query-side-service/build/libs:/app
-  command: java -jar /app/customers-query-side-service.jar --server.port=8084 --eureka.instance.prefer-ip-address=true --eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/
+  command: java -jar /app/customers-query-side-service.jar --spring.profiles.active=enableEureka --server.port=8084 --eureka.instance.prefer-ip-address=true --eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/
   ports:
     - "8084:8084"
   links:
-    - serviceregistry
-  links:
+    - eureka
     - mongodb
   environment:
     EVENTUATE_API_KEY_ID:
@@ -99,11 +100,11 @@ transactionscommandside:
   working_dir: /app
   volumes:
     - ./transactions-command-side-service/build/libs:/app
-  command: java -jar /app/transactions-command-side-service.jar --server.port=8082 --eureka.instance.prefer-ip-address=true --eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/
+  command: java -jar /app/transactions-command-side-service.jar --spring.profiles.active=enableEureka --server.port=8082 --eureka.instance.prefer-ip-address=true --eureka.client.serviceUrl.defaultZone=http://eureka:8761/eureka/
   ports:
     - "8082:8082"
   links:
-    - serviceregistry
+    - eureka
   environment:
     EVENTUATE_API_KEY_ID:
     EVENTUATE_API_KEY_SECRET:

@@ -11,7 +11,7 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-actuator"
 
     compile "net.chrisrichardson.eventstore.client:eventstore-http-stomp-client_2.10:$eventStoreClientVersion"
-    compile 'org.springframework.cloud:spring-cloud-starter-eureka-server:1.0.6.RELEASE'
+    compile "org.springframework.cloud:spring-cloud-starter-eureka-server:$springCloudVersion"
 
     testCompile project(":testutil-customers")
     testCompile project(":customers-command-side-service")
