@@ -1,9 +1,7 @@
 package net.chrisrichardson.eventstore.examples.bank.web;
 
 
-import com.netflix.appinfo.CloudInstanceConfig;
-import com.netflix.discovery.DefaultEurekaClientConfig;
-import com.netflix.discovery.DiscoveryManager;
+import net.chrisrichardson.eventstore.javaexamples.banking.backend.queryside.accounts.AccountTransactionInfo;
 import net.chrisrichardson.eventstore.javaexamples.banking.common.customers.CustomerInfo;
 import net.chrisrichardson.eventstore.javaexamples.banking.common.customers.CustomerResponse;
 import net.chrisrichardson.eventstore.javaexamples.banking.commonauth.utils.BasicAuthUtils;
@@ -19,6 +17,8 @@ import net.chrisrichardson.eventstorestore.javaexamples.testutil.customers.Custo
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -26,10 +26,11 @@ import org.springframework.web.client.RestTemplate;
 import rx.Observable;
 
 import java.math.BigDecimal;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 import static net.chrisrichardson.eventstorestore.javaexamples.testutil.TestUtil.eventually;
 import static net.chrisrichardson.eventstorestore.javaexamples.testutil.customers.CustomersTestUtils.generateCustomerInfo;
+import static org.junit.Assert.assertTrue;
 
 public class EndToEndTest {
 
@@ -38,8 +39,25 @@ public class EndToEndTest {
     return x == null ? defaultValue : x;
   }
 
-  private String makeBaseUrl(String path) {
-    return "http://" + getenv("SERVICE_HOST", "localhost") + ":" + 8080 + "/" + path;
+  private String makeBaseUrl(int port, String path) {
+    return "http://" + getenv("SERVICE_HOST", "localhost") + ":" + port + "/" + path;
+  }
+
+  private String accountsCommandSideBaseUrl(String path) {
+    return makeBaseUrl(8080, path);
+  }
+  private String accountsQuerySideBaseUrl(String path) {
+    return makeBaseUrl(8081, path);
+  }
+  private String transactionsCommandSideBaseUrl(String path) {
+    return makeBaseUrl(8082, path);
+  }
+  private String customersCommandSideBaseUrl(String path) {
+    return makeBaseUrl(8083, path);
+  }
+
+  private String customersQuerySideBaseUrl(String path) {
+    return makeBaseUrl(8084, path);
   }
 
   RestTemplate restTemplate = new RestTemplate();
@@ -83,25 +101,25 @@ public class EndToEndTest {
     BigDecimal finalFromAccountBalance = initialFromAccountBalance.subtract(amountToTransfer);
     BigDecimal finalToAccountBalance = initialToAccountBalance.add(amountToTransfer);
 
-    final CustomerResponse customerResponse = restTemplate.postForEntity(makeBaseUrl("/customers"),customerInfo, CustomerResponse.class).getBody();
+    final CustomerResponse customerResponse = restTemplate.postForEntity(customersCommandSideBaseUrl("/customers"),customerInfo, CustomerResponse.class).getBody();
     final String customerId = customerResponse.getId();
 
     customersTestUtils.assertCustomerResponse(customerId, customerInfo);
 
 
     final CreateAccountResponse fromAccount = BasicAuthUtils.doBasicAuthenticatedRequest(restTemplate,
-            makeBaseUrl("/accounts"),
+            accountsCommandSideBaseUrl("/accounts"),
             HttpMethod.POST,
             CreateAccountResponse.class,
-            new CreateAccountRequest(customerId, "My #1 Account", initialFromAccountBalance)
+            new CreateAccountRequest(customerId, "My #1 Account", "", initialFromAccountBalance)
     );
     final String fromAccountId = fromAccount.getAccountId();
 
     CreateAccountResponse toAccount = BasicAuthUtils.doBasicAuthenticatedRequest(restTemplate,
-            makeBaseUrl("/accounts"),
+            accountsCommandSideBaseUrl("/accounts"),
             HttpMethod.POST,
             CreateAccountResponse.class,
-            new CreateAccountRequest(customerId, "My #2 Account", initialToAccountBalance)
+            new CreateAccountRequest(customerId, "My #2 Account", "", initialToAccountBalance)
     );
 
     String toAccountId = toAccount.getAccountId();
@@ -114,7 +132,7 @@ public class EndToEndTest {
 
 
     final CreateMoneyTransferResponse moneyTransfer =  BasicAuthUtils.doBasicAuthenticatedRequest(restTemplate,
-            makeBaseUrl("/transfers"),
+            transactionsCommandSideBaseUrl("/transfers"),
             HttpMethod.POST,
             CreateMoneyTransferResponse.class,
             new CreateMoneyTransferRequest(fromAccountId, toAccountId, amountToTransfer)
@@ -124,6 +142,48 @@ public class EndToEndTest {
     assertAccountBalance(toAccountId, finalToAccountBalance);
 
     // TOOD - check state of money transfer
+
+    List<AccountTransactionInfo> transactionInfoList = restTemplate.exchange(accountsQuerySideBaseUrl("/accounts/"+fromAccountId+"/history"),
+            HttpMethod.GET,
+            new HttpEntity(BasicAuthUtils.basicAuthHeaders("test_user@mail.com")),
+            new ParameterizedTypeReference<List<AccountTransactionInfo>>() {}).getBody();
+
+    AccountTransactionInfo expectedTransactionInfo = new AccountTransactionInfo(moneyTransfer.getMoneyTransferId(), fromAccountId, toAccountId, toCents(amountToTransfer).longValue());
+
+    assertTrue(transactionInfoList.contains(expectedTransactionInfo));
+  }
+
+  @Test
+  public void shouldCreateAccountsAndGetByCustomer() {
+    BigDecimal initialFromAccountBalance = new BigDecimal(500);
+    CustomerInfo customerInfo = generateCustomerInfo();
+
+    final CustomerResponse customerResponse = restTemplate.postForEntity(customersCommandSideBaseUrl("/customers"), customerInfo, CustomerResponse.class).getBody();
+    final String customerId = customerResponse.getId();
+
+    Assert.assertNotNull(customerId);
+    Assert.assertEquals(customerInfo, customerResponse.getCustomerInfo());
+
+    customersTestUtils.assertCustomerResponse(customerId, customerInfo);
+
+    final CreateAccountResponse account = BasicAuthUtils.doBasicAuthenticatedRequest(restTemplate,
+            accountsCommandSideBaseUrl("/accounts"),
+            HttpMethod.POST,
+            CreateAccountResponse.class,
+            new CreateAccountRequest(customerId, "My 1 Account", "", initialFromAccountBalance)
+    );
+    final String accountId = account.getAccountId();
+
+    Assert.assertNotNull(accountId);
+
+    assertAccountBalance(accountId, initialFromAccountBalance);
+
+    List<GetAccountResponse> accountResponseList = restTemplate.exchange(accountsQuerySideBaseUrl("/accounts?customerId="+customerId),
+            HttpMethod.GET,
+            new HttpEntity(BasicAuthUtils.basicAuthHeaders("test_user@mail.com")),
+            new ParameterizedTypeReference<List<GetAccountResponse>>() {}).getBody();
+
+    assertTrue(accountResponseList.stream().filter(acc -> acc.getAccountId().equals(accountId)).findFirst().isPresent());
   }
 
   private BigDecimal toCents(BigDecimal dollarAmount) {
@@ -137,7 +197,7 @@ public class EndToEndTest {
               @Override
               public Observable<GetAccountResponse> produce() {
                   return Observable.just(BasicAuthUtils.doBasicAuthenticatedRequest(restTemplate,
-                          makeBaseUrl("/accounts/" + fromAccountId),
+                          accountsQuerySideBaseUrl("/accounts/" + fromAccountId),
                           HttpMethod.GET,
                           GetAccountResponse.class));
               }
