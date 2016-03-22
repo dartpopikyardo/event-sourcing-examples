@@ -1,6 +1,9 @@
 package net.chrisrichardson.eventstore.examples.bank.web;
 
 
+import com.netflix.appinfo.CloudInstanceConfig;
+import com.netflix.discovery.DefaultEurekaClientConfig;
+import com.netflix.discovery.DiscoveryManager;
 import net.chrisrichardson.eventstore.javaexamples.banking.backend.queryside.accounts.AccountTransactionInfo;
 import net.chrisrichardson.eventstore.javaexamples.banking.common.customers.CustomerInfo;
 import net.chrisrichardson.eventstore.javaexamples.banking.common.customers.CustomerResponse;
@@ -27,6 +30,7 @@ import rx.Observable;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static net.chrisrichardson.eventstorestore.javaexamples.testutil.TestUtil.eventually;
 import static net.chrisrichardson.eventstorestore.javaexamples.testutil.customers.CustomersTestUtils.generateCustomerInfo;
@@ -72,7 +76,7 @@ public class EndToEndTest {
     }
   }
 
-    customersTestUtils = new CustomersTestUtils(restTemplate, makeBaseUrl("/customers/"));
+    customersTestUtils = new CustomersTestUtils(restTemplate, customersQuerySideBaseUrl("/customers/"));
   }
 
   @Before

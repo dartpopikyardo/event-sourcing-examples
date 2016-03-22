@@ -1,51 +1,23 @@
-spring:
-  application:
-     name: api-gateway-service
-
-eureka:
-  client:
-    registryFetchIntervalSeconds: 5
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-
-zuul:
-  routes:
-    accounts:
-        path: /accounts/**
-    customers:
-        path: /customers/**
-    transfers:
-        path: /transfers/**
-
 api:
   gateway:
     endpoints:
       0:
         path: /accounts/**
         method: GET
-        service: accounts-query-side-service
+        location: http://${accounts.queryside.service.host}:8080
       1:
         path: /accounts/**
         method: POST
-        service: accounts-command-side-service
+        location: http://${accounts.commandside.service.host}:8080
       2:
         path: /customers/**
         method: GET
-        service: customers-query-side-service
+        location: http://${customers.queryside.service.host}:8080
       3:
         path: /customers/**
         method: POST
-        service: customers-command-side-service
+        location: http://${customers.commandside.service.host}:8080
       4:
         path: /transfers/**
         method: POST
-        service: transactions-command-side-service
-
-
-hystrix:
-  command:
-    default:
-      execution:
-        isolation:
-          thread:
-            timeoutInMilliseconds: 10000
+        location: http://${transfers.commandside.service.host}:8080
