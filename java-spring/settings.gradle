@@ -23,7 +23,6 @@ include 'transactions-command-side-service'
 
 include 'e2e-test'
 
-rootProject.name = 'java-spring-event-sourcing-example'
 include 'common-auth'
 include 'customers-command-side-backend'
 include 'customers-command-side-web'
@@ -33,8 +32,8 @@ include 'common-customers'
 include 'customers-command-side-service'
 include 'customers-query-side-service'
 include 'common-auth-web'
-include 'eureka-api-gateway-service'
+include 'api-gateway-service'
 include 'testutil-customers'
 include 'service-registry'
-include 'api-gateway-service'
 
+rootProject.name = 'java-spring-event-sourcing-example'

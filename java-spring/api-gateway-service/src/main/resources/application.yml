@@ -1,23 +1,64 @@
+spring:
+  application:
+     name: api-gateway-service
+
+zuul:
+  routes:
+    accounts:
+      path: /accounts/**
+    customers:
+      path: /customers/**
+    transfers:
+      path: /transfers/**
+
 api:
   gateway:
     endpoints:
       0:
         path: /accounts/**
         method: GET
-        location: http://${accounts.queryside.service.host}:8080
+        host: ${accounts.queryside.service.host:localhost}
+        port: 8081
+        service: accounts-query-side-service
       1:
         path: /accounts/**
         method: POST
-        location: http://${accounts.commandside.service.host}:8080
+        host: ${accounts.commandside.service.host:localhost}
+        port: 8085
+        service: accounts-command-side-service
       2:
         path: /customers/**
         method: GET
-        location: http://${customers.queryside.service.host}:8080
+        host: ${customers.queryside.service.host:localhost}
+        port: 8084
+        service: customers-query-side-service
       3:
         path: /customers/**
         method: POST
-        location: http://${customers.commandside.service.host}:8080
+        host: ${customers.commandside.service.host:localhost}
+        port: 8083
+        service: customers-command-side-service
       4:
         path: /transfers/**
         method: POST
-        location: http://${transfers.commandside.service.host}:8080
+        host: ${transactions.commandside.service.host:localhost}
+        port: 8082
+        service: transactions-command-side-service
+
+---
+spring:
+    profiles: enableEureka
+
+eureka:
+  client:
+    registryFetchIntervalSeconds: 60
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000

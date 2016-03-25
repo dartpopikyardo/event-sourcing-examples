@@ -1,15 +1,17 @@
-package net.chrisrichardson.eventstore.javaexamples.banking.apigateway.filters;
+package net.chrisrichardson.eventstore.javaexamples.banking.apigateway.filters.noneureka;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import net.chrisrichardson.eventstore.javaexamples.banking.apigateway.ApiGatewayProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.netflix.zuul.filters.ProxyRouteLocator;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 import org.springframework.web.util.UrlPathHelper;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by popikyardo on 06.03.16.
@@ -48,10 +50,15 @@ public class ServiceByVerbFilter extends ZuulFilter {
                             pathMatcher.match(e.getPath(), requestURI) && e.getMethod() == RequestMethod.valueOf(ctx.getRequest().getMethod())
                     )
                     .findFirst().orElseThrow(() -> new RuntimeException( new NoSuchRequestHandlingMethodException(ctx.getRequest())));
-        ctx.set("requestURI", requestURI);
-        ctx.setRouteHost(null);
-        ctx.set("serviceId", endpoint.getService());
-        ctx.setSendZuulResponse(true);
+
+        try {
+            ctx.setRouteHost(new URL("http://"+endpoint.getHost()+":"+endpoint.getPort()));
+            ctx.set("requestURI", requestURI);
+            ctx.setSendZuulResponse(true);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+
         return null;
     }
 
