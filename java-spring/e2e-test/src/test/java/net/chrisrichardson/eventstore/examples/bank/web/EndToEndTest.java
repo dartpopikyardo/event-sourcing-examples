@@ -1,9 +1,6 @@
 package net.chrisrichardson.eventstore.examples.bank.web;
 
 
-import com.netflix.appinfo.CloudInstanceConfig;
-import com.netflix.discovery.DefaultEurekaClientConfig;
-import com.netflix.discovery.DiscoveryManager;
 import net.chrisrichardson.eventstore.javaexamples.banking.backend.queryside.accounts.AccountTransactionInfo;
 import net.chrisrichardson.eventstore.javaexamples.banking.common.customers.CustomerInfo;
 import net.chrisrichardson.eventstore.javaexamples.banking.common.customers.CustomerResponse;
@@ -18,7 +15,6 @@ import net.chrisrichardson.eventstorestore.javaexamples.testutil.Producer;
 import net.chrisrichardson.eventstorestore.javaexamples.testutil.Verifier;
 import net.chrisrichardson.eventstorestore.javaexamples.testutil.customers.CustomersTestUtils;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -30,7 +26,6 @@ import rx.Observable;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static net.chrisrichardson.eventstorestore.javaexamples.testutil.TestUtil.eventually;
 import static net.chrisrichardson.eventstorestore.javaexamples.testutil.customers.CustomersTestUtils.generateCustomerInfo;
@@ -78,21 +73,6 @@ public class EndToEndTest {
 
     customersTestUtils = new CustomersTestUtils(restTemplate, customersQuerySideBaseUrl("/customers/"));
   }
-
-  @Before
-  public void init() {
-    DiscoveryManager discoveryManager = DiscoveryManager.getInstance();
-    discoveryManager.initComponent(
-            new CloudInstanceConfig(),
-            new DefaultEurekaClientConfig());
-
-    awaitServiceInEureka("accounts-command-side-service", discoveryManager);
-    awaitServiceInEureka("accounts-query-side-service", discoveryManager);
-    awaitServiceInEureka("customers-command-side-service", discoveryManager);
-    awaitServiceInEureka("customers-query-side-service", discoveryManager);
-    awaitServiceInEureka("transactions-command-side-service", discoveryManager);
-  }
-
 
   @Test
   public void shouldCreateCustomerAndAccountsAndTransferMoney() {
@@ -215,15 +195,4 @@ public class EndToEndTest {
             });
   }
 
-  private void awaitServiceInEureka(String serviceName, DiscoveryManager discoveryManager) {
-    try {
-       Observable.interval(500, TimeUnit.MILLISECONDS)
-              .take(100)
-              .map(x -> discoveryManager.getLookupService().getInstancesById(serviceName))
-              .filter(itemsList -> !itemsList.isEmpty())
-              .toBlocking().first();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
 }

@@ -5,7 +5,6 @@ eureka:
 
 mongodb:
   image: mongo:3.0.4
-  mem_limit: 512m
   hostname: mongodb
   command: mongod --smallfiles
   ports:
@@ -13,7 +12,6 @@ mongodb:
 
 apigateway:
   image: java:8
-  mem_limit: 512m
   working_dir: /app
   volumes:
     - ./api-gateway-service/build/libs:/app
@@ -22,6 +20,11 @@ apigateway:
     - "8080:8080"
   links:
     - eureka
+    - accountscommandside
+    - accountsqueryside
+    - customerscommandside
+    - customersqueryside
+    - transactionscommandside
   environment:
     EVENTUATE_API_KEY_ID:
     EVENTUATE_API_KEY_SECRET:
@@ -29,7 +32,6 @@ apigateway:
 
 accountscommandside:
   image: java:8
-  mem_limit: 512m
   working_dir: /app
   volumes:
     - ./accounts-command-side-service/build/libs:/app
@@ -46,7 +48,6 @@ accountscommandside:
 
 accountsqueryside:
   image: java:8
-  mem_limit: 512m
   working_dir: /app
   volumes:
     - ./accounts-query-side-service/build/libs:/app
@@ -64,7 +65,6 @@ accountsqueryside:
 
 customerscommandside:
   image: java:8
-  mem_limit: 512m
   working_dir: /app
   volumes:
     - ./customers-command-side-service/build/libs:/app
@@ -81,7 +81,6 @@ customerscommandside:
 
 customersqueryside:
   image: java:8
-  mem_limit: 512m
   working_dir: /app
   volumes:
     - ./customers-query-side-service/build/libs:/app
@@ -99,7 +98,6 @@ customersqueryside:
 
 transactionscommandside:
   image: java:8
-  mem_limit: 512m
   working_dir: /app
   volumes:
     - ./transactions-command-side-service/build/libs:/app
