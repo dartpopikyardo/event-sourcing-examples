@@ -31,5 +31,4 @@ public class CustomersCommandSideWebConfiguration extends WebMvcConfigurerAdapte
         adapter.setReturnValueHandlers(handlers);
         return new FakeThing();
     }
-
 }

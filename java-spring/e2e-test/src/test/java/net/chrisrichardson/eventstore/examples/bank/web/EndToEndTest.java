@@ -119,7 +119,7 @@ public class EndToEndTest {
             transactionsCommandSideBaseUrl("/transfers"),
             HttpMethod.POST,
             CreateMoneyTransferResponse.class,
-            new CreateMoneyTransferRequest(fromAccountId, toAccountId, amountToTransfer)
+            new CreateMoneyTransferRequest(fromAccountId, toAccountId, amountToTransfer, "")
     );
 
     assertAccountBalance(fromAccountId, finalFromAccountBalance);
@@ -132,9 +132,10 @@ public class EndToEndTest {
             new HttpEntity(BasicAuthUtils.basicAuthHeaders("test_user@mail.com")),
             new ParameterizedTypeReference<List<AccountTransactionInfo>>() {}).getBody();
 
-    AccountTransactionInfo expectedTransactionInfo = new AccountTransactionInfo(moneyTransfer.getMoneyTransferId(), fromAccountId, toAccountId, toCents(amountToTransfer).longValue());
-
-    assertTrue(transactionInfoList.contains(expectedTransactionInfo));
+    assertTrue(transactionInfoList.stream().filter(ti -> ti.getTransactionId().equals(moneyTransfer.getMoneyTransferId()) &&
+            ti.getFromAccountId().equals(fromAccountId) &&
+            ti.getToAccountId().equals(toAccountId) &&
+            ti.getAmount() == toCents(amountToTransfer).longValue()).findFirst().isPresent());
   }
 
   @Test
