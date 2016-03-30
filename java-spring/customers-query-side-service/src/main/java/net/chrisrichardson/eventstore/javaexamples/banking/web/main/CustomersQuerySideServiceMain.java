@@ -6,6 +6,14 @@ import org.springframework.boot.SpringApplication;
 public class CustomersQuerySideServiceMain {
 
   public static void main(String[] args) {
-    SpringApplication.run(CustomersQuerySideServiceConfiguration.class, args);
+    String useEureka = System.getenv().get("USE_EUREKA");
+
+    SpringApplication app = new SpringApplication(CustomersQuerySideServiceConfiguration.class);
+
+    if(useEureka!=null && useEureka.equals("true")) {
+      app.setAdditionalProfiles("enableEureka");
+    }
+
+    app.run(args);
   }
 }
