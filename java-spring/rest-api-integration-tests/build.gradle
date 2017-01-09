@@ -1,0 +1,20 @@
+apply plugin: VerifyMongoDBConfigurationPlugin
+
+dependencies {
+    compile project(":accounts-view-service")
+    compile project(":transactions-service")
+    compile project(":customers-service")
+    compile project(":customers-view-service")
+    compile project(":common-auth-web")
+    compile project(":common-swagger")
+
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+
+    compile "io.eventuate.client.java:eventuate-client-java-http-stomp-spring:$eventuateClientVersion"
+    compile project(":common-swagger")
+
+    testCompile project(":testutil")
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "io.eventuate.client.java:eventuate-client-java-jdbc:$eventuateClientVersion"
+}
