@@ -1,9 +1,9 @@
 package net.chrisrichardson.eventstore.javaexamples.banking.customersviewservice;
 
-import io.eventuate.javaclient.spring.jdbc.EventuateJdbcEventStoreConfiguration;
+import io.eventuate.javaclient.spring.jdbc.EmbeddedTestAggregateStoreConfiguration;
 import net.chrisrichardson.eventstore.javaexamples.banking.commonauth.AuthConfiguration;
-import net.chrisrichardson.eventstore.javaexamples.banking.web.commandside.customers.CustomersCommandSideWebConfiguration;
-import net.chrisrichardson.eventstore.javaexamples.banking.web.customers.queryside.CustomersQuerySideWebConfiguration;
+import net.chrisrichardson.eventstore.javaexamples.banking.customersservice.web.CustomersWebConfiguration;
+import net.chrisrichardson.eventstore.javaexamples.banking.customersviewservice.web.CustomersViewWebConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@Import({CustomersCommandSideWebConfiguration.class, CustomersQuerySideWebConfiguration.class, EventuateJdbcEventStoreConfiguration.class, AuthConfiguration.class})
+@Import({CustomersWebConfiguration.class, CustomersViewWebConfiguration.class, EmbeddedTestAggregateStoreConfiguration.class, AuthConfiguration.class})
 @EnableAutoConfiguration
 public class CustomersQuerySideServiceTestConfiguration {
 

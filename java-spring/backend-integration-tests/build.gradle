@@ -3,6 +3,7 @@ apply plugin: VerifyMongoDBConfigurationPlugin
 dependencies {
 
     testCompile project(":transactions-service")
+    testCompile project(":accounts-service")
     testCompile project(":accounts-view-service")
     testCompile project(":customers-service")
     testCompile project(":customers-view-service")

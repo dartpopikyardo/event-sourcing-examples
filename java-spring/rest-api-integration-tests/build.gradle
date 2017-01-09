@@ -1,20 +1,14 @@
 apply plugin: VerifyMongoDBConfigurationPlugin
 
 dependencies {
-    compile project(":accounts-view-service")
-    compile project(":transactions-service")
-    compile project(":customers-service")
-    compile project(":customers-view-service")
-    compile project(":common-auth-web")
-    compile project(":common-swagger")
-
-    compile "org.springframework.boot:spring-boot-starter-web"
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-
-    compile "io.eventuate.client.java:eventuate-client-java-http-stomp-spring:$eventuateClientVersion"
-    compile project(":common-swagger")
-
+    testCompile project(":common-auth-web")
+    testCompile project(":transactions-service")
+    testCompile project(":accounts-service")
+    testCompile project(":accounts-view-service")
+    testCompile project(":customers-service")
+    testCompile project(":customers-view-service")
     testCompile project(":testutil")
-    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "junit:junit:4.11"
+    testCompile "org.springframework.boot:spring-boot-starter-test:$springBootVersion"
     testCompile "io.eventuate.client.java:eventuate-client-java-jdbc:$eventuateClientVersion"
 }

@@ -17,12 +17,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 @EnableAutoConfiguration
 public class CustomersServiceMain {
 
-  @Bean
-  public HttpMessageConverters customConverters() {
-    HttpMessageConverter<?> additional = new MappingJackson2HttpMessageConverter();
-    return new HttpMessageConverters(additional);
-  }
-
   public static void main(String[] args) {
     SpringApplication.run(CustomersServiceMain.class, args);
   }

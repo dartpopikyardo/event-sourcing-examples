@@ -2,7 +2,6 @@ package net.chrisrichardson.eventstore.javaexamples.banking.web;
 
 import net.chrisrichardson.eventstorestore.javaexamples.testutil.AbstractRestAPITest;
 
-import net.chrisrichardson.eventstorestore.javaexamples.testutil.AuthenticatedRestTemplate;
 import net.chrisrichardson.eventstorestore.javaexamples.testutil.CustomersTestUtils;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
