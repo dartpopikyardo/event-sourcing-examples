@@ -2,7 +2,7 @@ package net.chrisrichardson.eventstore.javaexamples.banking.transactionsservice;
 
 import io.eventuate.javaclient.driver.EventuateDriverConfiguration;
 import net.chrisrichardson.eventstore.javaexamples.banking.commonswagger.CommonSwaggerConfiguration;
-import net.chrisrichardson.eventstore.javaexamples.banking.web.commandside.transactions.CommandSideWebTransactionsConfiguration;
+import net.chrisrichardson.eventstore.javaexamples.banking.transactionsservice.web.MoneyTransferWebConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@Import({CommandSideWebTransactionsConfiguration.class, EventuateDriverConfiguration.class, CommonSwaggerConfiguration.class})
+@Import({MoneyTransferWebConfiguration.class, EventuateDriverConfiguration.class, CommonSwaggerConfiguration.class})
 @EnableAutoConfiguration
 @ComponentScan
 public class TransactionsCommandSideServiceTestConfiguration {
