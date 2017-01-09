@@ -1,5 +1,6 @@
 package net.chrisrichardson.eventstore.javaexamples.banking.web;
 
+import io.eventuate.javaclient.spring.jdbc.EmbeddedTestAggregateStoreConfiguration;
 import net.chrisrichardson.eventstore.javaexamples.banking.accountsviewservice.web.AccountViewWebConfiguration;
 import net.chrisrichardson.eventstore.javaexamples.banking.commonswagger.CommonSwaggerConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
