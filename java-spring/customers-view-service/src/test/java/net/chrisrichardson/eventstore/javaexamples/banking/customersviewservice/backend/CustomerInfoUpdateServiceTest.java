@@ -1,11 +1,8 @@
 package net.chrisrichardson.eventstore.javaexamples.banking.customersviewservice.backend;
 
-import io.eventuate.javaclient.spring.jdbc.EventuateJdbcEventStoreConfiguration;
+import io.eventuate.javaclient.spring.jdbc.EmbeddedTestAggregateStoreConfiguration;
 import io.eventuate.javaclient.spring.jdbc.IdGenerator;
 import io.eventuate.javaclient.spring.jdbc.IdGeneratorImpl;
-import net.chrisrichardson.eventstore.javaexamples.banking.backend.queryside.customers.CustomerInfoUpdateService;
-import net.chrisrichardson.eventstore.javaexamples.banking.backend.queryside.customers.CustomerQueryService;
-import net.chrisrichardson.eventstore.javaexamples.banking.backend.queryside.customers.QuerySideCustomerConfiguration;
 import net.chrisrichardson.eventstore.javaexamples.banking.common.customers.CustomerInfo;
 import net.chrisrichardson.eventstore.javaexamples.banking.common.customers.ToAccountInfo;
 import net.chrisrichardson.eventstore.javaexamples.banking.web.customers.queryside.common.QuerySideCustomer;
@@ -31,7 +28,7 @@ public class CustomerInfoUpdateServiceTest {
 
   @Configuration
   @EnableAutoConfiguration
-  @Import({QuerySideCustomerConfiguration.class, EventuateJdbcEventStoreConfiguration.class})
+  @Import({CustomerViewBackendConfiguration.class, EmbeddedTestAggregateStoreConfiguration.class})
   public static class CustomerInfoUpdateServiceTestConfiguration {
 
   }
