@@ -33,10 +33,9 @@ public class AccountsCommandSideServiceIntegrationTest {
 
 
   @Test
-  public void shouldCreateAccountsAndTransferMoney() {
+  public void shouldCreateAccounts() {
     BigDecimal initialFromAccountBalance = new BigDecimal(500);
     BigDecimal initialToAccountBalance = new BigDecimal(100);
-    BigDecimal amountToTransfer = new BigDecimal(150);
     String customerId = "00000000-00000000";
     String title = "My Account";
 
@@ -48,8 +47,6 @@ public class AccountsCommandSideServiceIntegrationTest {
 
     Assert.assertNotNull(fromAccountId);
     Assert.assertNotNull(toAccountId);
-
-
   }
 
 

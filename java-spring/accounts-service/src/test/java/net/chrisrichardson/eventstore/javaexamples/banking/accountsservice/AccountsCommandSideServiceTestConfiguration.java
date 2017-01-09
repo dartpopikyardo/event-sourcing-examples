@@ -1,6 +1,10 @@
 package net.chrisrichardson.eventstore.javaexamples.banking.accountsservice;
 
 import net.chrisrichardson.eventstore.javaexamples.banking.accountsservice.web.AccountsWebConfiguration;
+import net.chrisrichardson.eventstore.javaexamples.banking.commonauth.AuthConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.SecurityFilterAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 @Configuration
-@Import(AccountsWebConfiguration.class)
+@Import({AccountsWebConfiguration.class, AuthConfiguration.class})
+@EnableAutoConfiguration
 public class AccountsCommandSideServiceTestConfiguration {
 
   @Bean

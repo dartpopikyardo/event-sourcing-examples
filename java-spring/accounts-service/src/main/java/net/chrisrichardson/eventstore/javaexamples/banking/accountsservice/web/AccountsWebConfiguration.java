@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({AccountsBackendConfiguration.class})
 @ComponentScan
-@EnableAutoConfiguration
 public class AccountsWebConfiguration {
 
 

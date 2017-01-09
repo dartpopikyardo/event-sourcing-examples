@@ -1,4 +1,3 @@
-apply plugin: VerifyMongoDBConfigurationPlugin
 apply plugin: VerifyEventStoreEnvironmentPlugin
 apply plugin: EventuateDependencyPlugin
 
